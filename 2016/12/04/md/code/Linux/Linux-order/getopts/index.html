@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="[TOC] getopts 命令Shell 参数处理在bash中，可以用以下三种方式来处理命令行参数，每种方式都有自己的应用场景。    手工处理方式 getopts getopt  手工处理方式在手工处理方式中，首先要知道几个变量，还是以上面的命令行为例：  $0 ：./test.sh,即命令本身，相当于C/C++中的argv[0] $1 ：-f,第一个参数. $2 ：config.conf $">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://yoursite.com/2016/12/04/md/code/Linux/Linux-order/getopts/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="[TOC] getopts 命令Shell 参数处理在bash中，可以用以下三种方式来处理命令行参数，每种方式都有自己的应用场景。    手工处理方式 getopts getopt  手工处理方式在手工处理方式中，首先要知道几个变量，还是以上面的命令行为例：  $0 ：./test.sh,即命令本身，相当于C/C++中的argv[0] $1 ：-f,第一个参数. $2 ：config.conf $">
+<meta property="og:updated_time" content="2017-07-25T06:13:43.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hexo">
+<meta name="twitter:description" content="[TOC] getopts 命令Shell 参数处理在bash中，可以用以下三种方式来处理命令行参数，每种方式都有自己的应用场景。    手工处理方式 getopts getopt  手工处理方式在手工处理方式中，首先要知道几个变量，还是以上面的命令行为例：  $0 ：./test.sh,即命令本身，相当于C/C++中的argv[0] $1 ：-f,第一个参数. $2 ：config.conf $">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-md/code/Linux/Linux-order/getopts" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/12/04/md/code/Linux/Linux-order/getopts/" class="article-date">
+  <time datetime="2016-12-04T14:06:48.000Z" itemprop="datePublished">2016-12-04</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>[TOC]</p>
+<h1 id="getopts-命令"><a href="#getopts-命令" class="headerlink" title="getopts 命令"></a>getopts 命令</h1><h2 id="Shell-参数处理"><a href="#Shell-参数处理" class="headerlink" title="Shell 参数处理"></a>Shell 参数处理</h2><p>在bash中，可以用以下三种方式来处理命令行参数，每种方式都有自己的应用场景。  </p>
+<ul>
+<li>手工处理方式</li>
+<li>getopts</li>
+<li>getopt</li>
+</ul>
+<h3 id="手工处理方式"><a href="#手工处理方式" class="headerlink" title="手工处理方式"></a>手工处理方式</h3><p>在手工处理方式中，首先要知道几个变量，还是以上面的命令行为例：</p>
+<ul>
+<li>$0 ：./test.sh,即命令本身，相当于C/C++中的argv[0]</li>
+<li>$1 ：-f,第一个参数.</li>
+<li>$2 ：config.conf</li>
+<li>$3, $4 … ：类推。</li>
+<li>$#  参数的个数，不包括命令本身，上例中$#为4.</li>
+<li>$@ ：参数本身的列表，也不包括命令本身，如上例为-f config.conf -v –prefix=/home</li>
+<li>$<em> ：和$@相同，但”$</em>“ 和 “$@”(加引号)并不同，”$*”将所有的参数解释成一个字符串，而”$@”是一个参数数组</li>
+</ul>
+<p>手工处理方式能满足大多数的简单需求，配合shift使用也能构造出强大的功能，但在要处理复杂选项的时候建议用下面的两种方法。</p>
+<h3 id="getopts和getopt"><a href="#getopts和getopt" class="headerlink" title="getopts和getopt"></a>getopts和getopt</h3><p>处理命令行参数是一个相似而又复杂的事情，为此，C提供了getopt/getopt_long等函数，<br>C++的boost提供了Options库，在shell中，处理此事的是getopts和getopt.</p>
+<p>getopts和getopt功能相似但又不完全相同，其中getopt是独立的可执行文件，而getopts是由Bash内置的。</p>
+<p>先来看看参数传递的典型用法:</p>
+<ul>
+<li>./test.sh -a -b -c  ： 短选项，各选项不需参数</li>
+<li>./test.sh -abc   ： 短选项，和上一种方法的效果一样，只是将所有的选项写在一起。</li>
+<li>./test.sh -a args -b -c ：短选项，其中-a需要参数，而-b -c不需参数。</li>
+<li>./test.sh –a-long=args –b-long ：长选项</li>
+</ul>
+<p><strong>我们先来看getopts,它不支持长选项。</strong></p>
+<h4 id="getopts"><a href="#getopts" class="headerlink" title="getopts"></a>getopts</h4><p>示例代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">#!/bin/bash</div><div class="line"></div><div class="line">while getopts &quot;a:bc&quot; arg #选项后面的冒号表示该选项需要参数</div><div class="line">do</div><div class="line">    case $arg in</div><div class="line">         a)</div><div class="line">            echo &quot;a&apos;s arg:$OPTARG&quot; #参数存在$OPTARG中</div><div class="line">            ;;</div><div class="line">         b)</div><div class="line">            echo &quot;b&quot;</div><div class="line">            ;;</div><div class="line">         c)</div><div class="line">            echo &quot;c&quot;</div><div class="line">            ;;</div><div class="line">         ?)  #当有不认识的选项的时候arg为?</div><div class="line">        echo &quot;unkonw argument&quot;</div><div class="line">    exit 1</div><div class="line">    ;;</div><div class="line">    esac</div><div class="line">done</div></pre></td></tr></table></figure></p>
+<p>现在就可以使用：<br>./test.sh -a arg -b -c<br>或<br>./test.sh -a arg -bc</p>
+<p>执行结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">a&apos;s arg:arg</div><div class="line">b</div><div class="line">c</div></pre></td></tr></table></figure></p>
+<p>应该说绝大多数脚本使用该函数就可以了，如果需要支持长选项以及可选参数，那么就需要使用getopt。</p>
+<h4 id="getopt"><a href="#getopt" class="headerlink" title="getopt"></a>getopt</h4><p>有一个shell工具getopt是另一个程序，而不是bash内置的。 getopt(3)的GNU实现(由命令行 getopt(1)在Linux上使用)支持解析长选项。<br>但是，getopt(例如在Mac OS X上)的BSD实现没有。</p>
+<p>所以在 Mac OS 上不支持 getopt，但是可以安装这个程序，执行 <code>brew install gnu-getopt.</code> 命令安装程序，安装完成后可以执行 <code>ln -s /usr/local/Cellar/gnu-getopt/1.1.6/bin/getopt /usr/local/bin/ggetopt</code> 命令做一个软连接，就可以使用程序了。PS:这里要注意软连接的路径要改成自己的路径，软连接的名称改为 ggetopt 是因为 Mac OS 下已经存在了 getopt 命令，但是这个命令不完整，改名是为了防止冲突。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div></pre></td><td class="code"><pre><div class="line">#!/bin/bash</div><div class="line"></div><div class="line">#echo $@</div><div class="line"></div><div class="line">#-o或--options选项后面接可接受的短选项，如ab:c::，表示可接受的短选项为-a -b -c，其中-a选项不接参数，-b选项后必须接参数，-c选项的参数为可选的</div><div class="line">#-l或--long选项后面接可接受的长选项，用逗号分开，冒号的意义同短选项。</div><div class="line">#-n选项后接选项解析错误时提示的脚本名字</div><div class="line">ARGS=`ggetopt -o adb:c:: --long along,blong:,clong:: -n &apos;example.sh&apos; -- &quot;$@&quot;`</div><div class="line">if [ $? != 0 ]; then</div><div class="line">    echo &quot;Terminating...&quot;</div><div class="line">    exit 1</div><div class="line">fi</div><div class="line"></div><div class="line">#echo $ARGS</div><div class="line">#将规范化后的命令行参数分配至位置参数（$1,$2,...)</div><div class="line">echo $&#123;ARGS&#125;</div><div class="line">eval set -- &quot;$&#123;ARGS&#125;&quot;</div><div class="line">echo $&#123;ARGS&#125;</div><div class="line"></div><div class="line">while true</div><div class="line">do</div><div class="line">echo &quot;============：&quot; $1 $2 $3  &quot;argument_num:&quot; $# &quot;argument:&quot;$@</div><div class="line">    case &quot;$1&quot; in</div><div class="line">        -a|--along) </div><div class="line">            echo &quot;Option a&quot;;</div><div class="line">            shift</div><div class="line">            ;;</div><div class="line">        -d) </div><div class="line">        echo &quot;Option d&quot;;</div><div class="line">        shift</div><div class="line">        ;;</div><div class="line">        -b|--blong)</div><div class="line">            echo &quot;Option b, argument $2&quot;;</div><div class="line">            shift 2</div><div class="line">            ;;</div><div class="line">        -c|--clong)</div><div class="line">            case &quot;$2&quot; in</div><div class="line">                &quot;&quot;)</div><div class="line">                    echo &quot;Option c, no argument&quot;;</div><div class="line">                    shift 2  </div><div class="line">                    ;;</div><div class="line">                *)</div><div class="line">                    echo &quot;Option c, argument $2&quot;;</div><div class="line">                    shift 2;</div><div class="line">                    ;;</div><div class="line">            esac</div><div class="line">            ;;</div><div class="line">        --)</div><div class="line">            shift</div><div class="line">            break</div><div class="line">            ;;</div><div class="line">        *)</div><div class="line">            echo &quot;Internal error!&quot;</div><div class="line">            exit 1</div><div class="line">            ;;</div><div class="line">    esac</div><div class="line">done</div><div class="line"></div><div class="line">#处理剩余的参数</div><div class="line">for arg in $@</div><div class="line">do</div><div class="line">    echo &quot;processing $arg&quot;</div><div class="line">done</div></pre></td></tr></table></figure>
+<p>getopt命令与getopts命令不同，它实际上是通过将参数规范化来帮助我们处理的。规范化后的参数仍然需要我们手动处理。比如：你输入的命令为 ./wwc.sh -a  -b arg arg1 -ccc，按照上述程序，规范化后的参数就是 -a -b ‘arg’ -c ‘cc’ – ‘arg1’。</p>
+<h2 id="扩展"><a href="#扩展" class="headerlink" title="扩展"></a>扩展</h2><h3 id="ln-命令"><a href="#ln-命令" class="headerlink" title="ln 命令"></a>ln 命令</h3><p>ln [参数][源文件或目录][目标文件或目录]</p>
+<h3 id="Shell编程中Shift的用法"><a href="#Shell编程中Shift的用法" class="headerlink" title="Shell编程中Shift的用法"></a>Shell编程中Shift的用法</h3><p>位置参数可以用shift命令左移。比如shift 3表示原来的$4现在变成$1，原来的$5现在变成$2等等，原来的$1、$2、$3丢弃，$0不移动。不带参数的shift命令相当于shift 1。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/12/04/md/code/Linux/Linux-order/getopts/" data-id="cj95hfezv0003bqc034uk3yzp" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2017/09/12/md/study/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          (no title)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/12/04/md/code/Linux/Linux-order/sed/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title"></div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/10/13/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2017/09/12/md/study/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2016/12/04/md/code/Linux/Linux-order/getopts/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2016/12/04/md/code/Linux/Linux-order/sed/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2016/12/04/md/code/Linux/Linux-order/sysctl/">(no title)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
